@@ -3,7 +3,7 @@ import StateMachine from "../../Wolfie2D/DataTypes/State/StateMachine";
 import GameEvent from "../../Wolfie2D/Events/GameEvent";
 import GameNode from "../../Wolfie2D/Nodes/GameNode";
 import AnimatedSprite from "../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
-import EnemyController from "./EnemyController";
+import EnemyController, { EnemyStates } from "./EnemyController";
 
 export default abstract class EnemyState extends State {
 	owner: GameNode;
@@ -16,7 +16,8 @@ export default abstract class EnemyState extends State {
 		this.owner = owner;
 	}
 
-	handleInput(event: GameEvent): void {}
+	handleInput(event: GameEvent): void {
+	}
 
 	update(deltaT: number): void {
 		// Do gravity

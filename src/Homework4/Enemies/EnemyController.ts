@@ -1,6 +1,7 @@
 import Idle from "./Idle";
 import Jump from "./Jump";
 import Walk from "./Walk";
+import SpikeBallJump from "./SpikeBallJump"
 import GameNode from "../../Wolfie2D/Nodes/GameNode";
 import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
 import StateMachineAI from "../../Wolfie2D/AI/StateMachineAI";
@@ -11,7 +12,8 @@ export enum EnemyStates {
 	IDLE = "idle",
 	WALK = "walk",
 	JUMP = "jump",
-	PREVIOUS = "previous"
+	PREVIOUS = "previous",
+	SPIKEBALLJUMP = 'spikeBallJump'
 }
 
 // HOMEWORK 4 - TODO
@@ -35,13 +37,36 @@ export default class EnemyController extends StateMachineAI {
 	direction: Vec2 = Vec2.ZERO;
 	velocity: Vec2 = Vec2.ZERO;
 	speed: number = 200;
+	spikeball:boolean;
 
 	initializeAI(owner: GameNode, options: Record<string, any>){
 		this.owner = owner;
 		this.jumpy = options.jumpy ? options.jumpy : false;
+		this.spikeball = options.spikeball ? options.spikeball : false;
 
 		this.receiver.subscribe(HW4_Events.PLAYER_MOVE);
 		if(this.jumpy){
+			this.receiver.subscribe(HW4_Events.PLAYER_JUMP);
+			this.speed = 100;
+
+			// Give the owner a tween for the jump
+			owner.tweens.add("jump", {
+                startDelay: 0,
+                duration: 300,
+                effects: [
+                    {
+                        property: "rotation",
+                        resetOnComplete: true,
+                        start: -3.14/8,
+                        end: 3.14/8,
+                        ease: EaseFunctionType.IN_OUT_SINE
+                    }
+                ],
+                reverseOnComplete: true,
+            });
+		}
+		if(this.spikeball){
+			console.log('init spikeball')
 			this.receiver.subscribe(HW4_Events.PLAYER_JUMP);
 			this.speed = 100;
 
@@ -69,10 +94,14 @@ export default class EnemyController extends StateMachineAI {
 		let jump = new Jump(this, owner);
 		this.addState(EnemyStates.JUMP, jump);
 
+		let spikeBallJump = new SpikeBallJump(this,owner)
+		this.addState(EnemyStates.SPIKEBALLJUMP, spikeBallJump);
+
 		this.initialize(EnemyStates.IDLE);
 	}
 
 	changeState(stateName: string): void {
+		
 
         if(stateName === EnemyStates.JUMP){
             this.stack.push(this.stateMap.get(stateName));
@@ -81,6 +110,7 @@ export default class EnemyController extends StateMachineAI {
 	}
 
 	update(deltaT: number): void {
+		
 		super.update(deltaT);
 	}
 }

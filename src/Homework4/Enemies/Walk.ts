@@ -24,6 +24,9 @@ export default class Walk extends OnGround {
 			this.finished(EnemyStates.JUMP);
 			this.parent.velocity.y = -300;
 		}
+		if(this.parent.spikeball){
+			this.finished(EnemyStates.SPIKEBALLJUMP);
+		}
 
 		this.parent.velocity.x = this.parent.direction.x * this.parent.speed;
 
