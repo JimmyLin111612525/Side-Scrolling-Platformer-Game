@@ -21,7 +21,7 @@ export default class Idle extends OnGround {
 	handleInput(event: GameEvent) {
 		if(event.type === HW4_Events.PLAYER_MOVE){
 			let pos = event.data.get("position");
-			if(this.owner.position.x - pos.x < (64*10)){
+			if(this.owner.position.x - pos.x < (64*10) || this.parent.spikeball){
 				this.finished(EnemyStates.WALK);
 			}
 		}

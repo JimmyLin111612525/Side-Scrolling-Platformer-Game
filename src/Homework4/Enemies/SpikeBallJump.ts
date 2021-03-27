@@ -14,16 +14,6 @@ export default class SpikeBallJump extends EnemyState  {
 	}
 
 	handleInput(event: GameEvent) {
-		
-		// if(event.type === HW4_Events.PLAYER_MOVE && this.parent.spikeball){
-		// 	console.log('spikeball change')
-		// 	let pos = event.data.get("position");
-		// 	if(this.owner.position.x - pos.x < 200){
-		// 		console.log('spikeball jump')
-		// 	}else{
-		// 		console.log('spikeball idle')
-		// 	}
-		// }
 		if(event){
 			this.event=event;
 		}
@@ -35,7 +25,10 @@ export default class SpikeBallJump extends EnemyState  {
 
 		if(this.parent.spikeball){
 			let pos = this.event.data.get("position");
-			if(this.owner.position.x - pos.x < 100){
+			const a = this.owner.position.x - pos.x;
+			const b =this.owner.position.y - pos.y;
+			const dist = Math.sqrt( a*a + b*b );
+			if(dist < 50){
 				console.log('spikeball jump')
 				this.finished(EnemyStates.JUMP);
 				this.parent.velocity.y = -300;
