@@ -66,7 +66,6 @@ export default class EnemyController extends StateMachineAI {
             });
 		}
 		if(this.spikeball){
-			console.log('init spikeball')
 			this.receiver.subscribe(HW4_Events.PLAYER_JUMP);
 			this.speed = 100;
 

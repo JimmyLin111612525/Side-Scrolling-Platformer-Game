@@ -29,11 +29,9 @@ export default class SpikeBallJump extends EnemyState  {
 			const b =this.owner.position.y - pos.y;
 			const dist = Math.sqrt( a*a + b*b );
 			if(dist < 50){
-				console.log('spikeball jump')
 				this.finished(EnemyStates.JUMP);
 				this.parent.velocity.y = -300;
 			}else{
-				console.log('spikeball idle: ', this.owner.id)
 				this.finished(EnemyStates.IDLE);
 			}
 		}

@@ -140,7 +140,7 @@ export default class GameLevel extends Scene {
                 case HW4_Events.ENEMY_DIED:
                     {
                         // An enemy finished its dying animation, destroy it
-                        let node = this.sceneGraph.getNode(event.data.get("owner"));
+                        let node = this.sceneGraph.getNode(event.data.get("owner").id);
                         node.destroy();
                     }
                     break;
@@ -360,7 +360,11 @@ export default class GameLevel extends Scene {
         let enemy = this.add.animatedSprite(spriteKey, "primary");
         enemy.position.set(tilePos.x*32, tilePos.y*32);
         enemy.scale.set(2, 2);
-        enemy.addPhysics();
+        //
+        enemy.addPhysics(new AABB(Vec2.ZERO, new Vec2(14, 14)));
+        enemy.colliderOffset.set(0, 2);
+        enemy.setTrigger("player", HW4_Events.PLAYER_HIT_ENEMY, null);
+        //
         enemy.addAI(EnemyController, aiOptions);
         enemy.setGroup("enemy");
     }
@@ -395,7 +399,29 @@ export default class GameLevel extends Scene {
      * 
      * You can implement this method using whatever math you see fit.
      */
-    protected handlePlayerEnemyCollision(player: AnimatedSprite, enemy: AnimatedSprite) {}
+    protected handlePlayerEnemyCollision(player: AnimatedSprite, enemy: AnimatedSprite) {
+        if(enemy){
+            if(enemy.imageId==='GhostBunny'){
+                if((player.sweptRect.bottom>=enemy.sweptRect.top) && (player.sweptRect.bottom !== enemy.sweptRect.bottom) && (player.sweptRect.top !== enemy.sweptRect.top)){
+                    this.emitter.fireEvent(HW4_Events.ENEMY_DIED, {owner:enemy});
+                }else{
+                    this.incPlayerLife(-1);
+                    this.respawnPlayer();
+                }
+                
+            }else if(enemy.imageId==='Hopper'){
+                if((player.sweptRect.top>enemy.sweptRect.top) && (player.sweptRect.bottom !== enemy.sweptRect.bottom)){
+                    this.emitter.fireEvent(HW4_Events.ENEMY_DIED, {owner:enemy});
+                }else{
+                    this.incPlayerLife(-1);
+                    this.respawnPlayer();
+                }
+            }else{
+                this.incPlayerLife(-1);
+                this.respawnPlayer();
+            }
+        }
+    }
 
     /**
      * Increments the amount of life the player has
