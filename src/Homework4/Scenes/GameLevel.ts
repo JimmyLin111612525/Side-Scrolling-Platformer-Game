@@ -93,6 +93,7 @@ export default class GameLevel extends Scene {
                 case HW4_Events.PLAYER_HIT_COIN:
                     {
                         // Hit a coin
+                        console.log('coin')
                         let coin;
                         if(event.data.get("node") === this.player.id){
                             // Other is coin, disable
@@ -181,7 +182,14 @@ export default class GameLevel extends Scene {
                         }
                     }
                     break;
-
+                case 'PLAYER_DIED':
+                    {
+                        this.incPlayerLife(-1);
+                        this.respawnPlayer();
+                        if(GameLevel.livesCount===0){
+                            this.sceneManager.changeToScene(MainMenu, {});
+                        }
+                    }
             }
         }
 
@@ -224,7 +232,8 @@ export default class GameLevel extends Scene {
             HW4_Events.ENEMY_DIED,
             HW4_Events.PLAYER_ENTERED_LEVEL_END,
             HW4_Events.LEVEL_START,
-            HW4_Events.LEVEL_END
+            HW4_Events.LEVEL_END,
+            'PLAYER_DIED'
         ]);
     }
 
@@ -329,6 +338,20 @@ export default class GameLevel extends Scene {
             ]
         });
 
+        this.player.tweens.add("dying", {
+            startDelay: 0,
+            duration: 100,
+            effects: [
+                {
+                    property: "rotation",
+                    start: 0,
+                    end: 2*Math.PI,
+                    ease: EaseFunctionType.IN_SINE
+                }
+            ],
+            onEnd: 'PLAYER_DIED'
+        });
+
         this.viewport.follow(this.player);
     }
 
@@ -401,25 +424,37 @@ export default class GameLevel extends Scene {
     protected handlePlayerEnemyCollision(player: AnimatedSprite, enemy: AnimatedSprite) {
         if(enemy){
             if(enemy.imageId==='GhostBunny'){
-                if((player.sweptRect.bottom>enemy.sweptRect.top) && (player.sweptRect.bottom !== enemy.sweptRect.bottom) && (player.sweptRect.top !== enemy.sweptRect.top)){
+                if(player.sweptRect.bottom>=enemy.sweptRect.top && (player.sweptRect.right>enemy.sweptRect.left || player.sweptRect.left<enemy.sweptRect.right) && (player.sweptRect.top != enemy.sweptRect.top)){
                     enemy.disablePhysics()
                     enemy.animation.play('DYING', false, HW4_Events.ENEMY_DIED)
-                }else{
-                    this.incPlayerLife(-1);
-                    this.respawnPlayer();
+                }
+
+                // if((player.sweptRect.bottom>enemy.sweptRect.top) && (player.sweptRect.bottom !== enemy.sweptRect.bottom) && (player.sweptRect.top !== enemy.sweptRect.top)){
+                //     enemy.disablePhysics()
+                //     enemy.animation.play('DYING', false, HW4_Events.ENEMY_DIED)
+                // }
+                else{
+                    
+                    this.player.tweens.play('dying')
+                    // this.incPlayerLife(-1);
+                    // this.respawnPlayer();
+                    
                 }
                 
             }else if(enemy.imageId==='Hopper'){
-                if((player.sweptRect.top!==enemy.sweptRect.top) && (player.sweptRect.bottom !== enemy.sweptRect.bottom) && (player.sweptRect.top<enemy.sweptRect.bottom)){
+                if((player.sweptRect.top>enemy.sweptRect.top) && (player.sweptRect.bottom > enemy.sweptRect.bottom) && (player.sweptRect.top<=enemy.sweptRect.bottom) && (!enemy.onGround)){
+                    console.log(enemy)
                     enemy.disablePhysics()
                     enemy.animation.play('DYING',false, HW4_Events.ENEMY_DIED)
                 }else{
-                    this.incPlayerLife(-1);
-                    this.respawnPlayer();
+                    this.player.tweens.play('dying')
+                    // this.incPlayerLife(-1);
+                    // this.respawnPlayer();
                 }
             }else{
-                this.incPlayerLife(-1);
-                this.respawnPlayer();
+                this.player.tweens.play('dying')
+                // this.incPlayerLife(-1);
+                // this.respawnPlayer();
             }
         }
     }

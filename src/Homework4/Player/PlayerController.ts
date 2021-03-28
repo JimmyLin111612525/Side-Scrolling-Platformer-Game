@@ -11,6 +11,8 @@ import Jump from "./PlayerStates/Jump";
 import Run from "./PlayerStates/Run";
 import Walk from "./PlayerStates/Walk";
 
+import {EaseFunctionType} from "../../Wolfie2D/Utils/EaseFunctions"
+
 export enum PlayerType {
     PLATFORMER = "platformer",
     TOPDOWN = "topdown"
@@ -54,9 +56,12 @@ export default class PlayerController extends StateMachineAI {
             The coin block that the player collides with should then be set to be a dark coin block.
             Look at the tileset image for reference.
         */
+        
+        
         this.coin = this.owner.getScene().add.sprite("coin", "coinLayer");
-        this.coin.position.set(-100, -100);
-        this.coin.scale.set(2, 2);
+        
+
+        
     }
 
     initializePlatformer(): void {
