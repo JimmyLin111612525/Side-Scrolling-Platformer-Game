@@ -139,8 +139,7 @@ export default class GameLevel extends Scene {
 
                 case HW4_Events.ENEMY_DIED:
                     {
-                        // An enemy finished its dying animation, destroy it
-                        let node = this.sceneGraph.getNode(event.data.get("owner").id);
+                        let node = this.sceneGraph.getNode(event.data.get("owner"));
                         node.destroy();
                     }
                     break;
@@ -402,16 +401,18 @@ export default class GameLevel extends Scene {
     protected handlePlayerEnemyCollision(player: AnimatedSprite, enemy: AnimatedSprite) {
         if(enemy){
             if(enemy.imageId==='GhostBunny'){
-                if((player.sweptRect.bottom>=enemy.sweptRect.top) && (player.sweptRect.bottom !== enemy.sweptRect.bottom) && (player.sweptRect.top !== enemy.sweptRect.top)){
-                    this.emitter.fireEvent(HW4_Events.ENEMY_DIED, {owner:enemy});
+                if((player.sweptRect.bottom>enemy.sweptRect.top) && (player.sweptRect.bottom !== enemy.sweptRect.bottom) && (player.sweptRect.top !== enemy.sweptRect.top)){
+                    enemy.disablePhysics()
+                    enemy.animation.play('DYING', false, HW4_Events.ENEMY_DIED)
                 }else{
                     this.incPlayerLife(-1);
                     this.respawnPlayer();
                 }
                 
             }else if(enemy.imageId==='Hopper'){
-                if((player.sweptRect.top>enemy.sweptRect.top) && (player.sweptRect.bottom !== enemy.sweptRect.bottom)){
-                    this.emitter.fireEvent(HW4_Events.ENEMY_DIED, {owner:enemy});
+                if((player.sweptRect.top!==enemy.sweptRect.top) && (player.sweptRect.bottom !== enemy.sweptRect.bottom) && (player.sweptRect.top<enemy.sweptRect.bottom)){
+                    enemy.disablePhysics()
+                    enemy.animation.play('DYING',false, HW4_Events.ENEMY_DIED)
                 }else{
                     this.incPlayerLife(-1);
                     this.respawnPlayer();
