@@ -186,6 +186,7 @@ export default class GameLevel extends Scene {
                     {
                         this.incPlayerLife(-1);
                         this.respawnPlayer();
+                        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "player_death", loop: false, holdReference: false});
                         if(GameLevel.livesCount===0){
                             this.sceneManager.changeToScene(MainMenu, {});
                         }
@@ -427,6 +428,7 @@ export default class GameLevel extends Scene {
                 if(player.sweptRect.bottom>=enemy.sweptRect.top && (player.sweptRect.right>enemy.sweptRect.left || player.sweptRect.left<enemy.sweptRect.right) && (player.sweptRect.top != enemy.sweptRect.top)){
                     enemy.disablePhysics()
                     enemy.animation.play('DYING', false, HW4_Events.ENEMY_DIED)
+                    this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "ghost", loop: false, holdReference: false});
                 }
 
                 // if((player.sweptRect.bottom>enemy.sweptRect.top) && (player.sweptRect.bottom !== enemy.sweptRect.bottom) && (player.sweptRect.top !== enemy.sweptRect.top)){
@@ -446,6 +448,7 @@ export default class GameLevel extends Scene {
                     console.log(enemy)
                     enemy.disablePhysics()
                     enemy.animation.play('DYING',false, HW4_Events.ENEMY_DIED)
+                    this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "hopper", loop: false, holdReference: false});
                 }else{
                     this.player.tweens.play('dying')
                     // this.incPlayerLife(-1);
