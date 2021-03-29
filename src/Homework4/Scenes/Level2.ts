@@ -1,6 +1,7 @@
 import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
 import Debug from "../../Wolfie2D/Debug/Debug";
 import GameLevel from "./GameLevel";
+import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
 
 export default class Level2 extends GameLevel {
     // HOMEWORK 4 - TODO
@@ -59,6 +60,7 @@ export default class Level2 extends GameLevel {
         for(let pos of [new Vec2(33, 18)]){
             this.addEnemy("hopper", pos, {jumpy: true});
         }
+        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "song", loop: true, holdReference: true});
     }
 
     updateScene(deltaT: number): void {

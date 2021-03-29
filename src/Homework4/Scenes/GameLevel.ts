@@ -45,6 +45,7 @@ export default class GameLevel extends Scene {
     // Screen fade in/out for level start and end
     protected levelTransitionTimer: Timer;
     protected levelTransitionScreen: Rect;
+    
 
     startScene(): void {
         // Do the game level standard initializations
@@ -75,6 +76,7 @@ export default class GameLevel extends Scene {
 
         // Initially disable player movement
         Input.disableInput();
+        
     }
 
     // HOMEWORK 4 - TODO
@@ -151,6 +153,7 @@ export default class GameLevel extends Scene {
                             // The player has reached the end of the level
                             this.levelEndTimer.start();
                             this.levelEndLabel.tweens.play("slideIn");
+                            this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "song"});
                         }
                     }
                     break;

@@ -2,6 +2,7 @@ import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
 import Debug from "../../Wolfie2D/Debug/Debug";
 import GameLevel from "./GameLevel";
 import Level2 from "./Level2";
+import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
 
 export default class Level1 extends GameLevel {
     
@@ -18,6 +19,8 @@ export default class Level1 extends GameLevel {
         this.load.audio("player_death", "hw4_assets/sounds/player_death.wav");
         this.load.audio("ghost", "hw4_assets/sounds/ghost.mp3")
         this.load.audio("hopper", "hw4_assets/sounds/hopper.mp3")
+        this.load.audio("song", "hw4_assets/music/song.mp3");
+        
     }
 
     // HOMEWORK 4 - TODO
@@ -43,6 +46,9 @@ export default class Level1 extends GameLevel {
         this.load.keepAudio('player_death')
         this.load.keepAudio('ghost')
         this.load.keepAudio('hopper')
+        this.load.keepAudio('song')
+        
+        
     }
 
     startScene(): void {
@@ -73,6 +79,7 @@ export default class Level1 extends GameLevel {
         for(let pos of [new Vec2(51, 17)]){
             this.addEnemy("hopper", pos, {jumpy: true});
         }
+        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "song", loop: true, holdReference: true});
     }
 
     updateScene(deltaT: number): void {
