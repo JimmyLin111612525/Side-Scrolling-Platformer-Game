@@ -54,7 +54,6 @@ export default class GameLevel extends Scene {
         this.initPlayer();
         this.subscribeToEvents();
         this.addUI();
-
         // Initialize the timers
         this.respawnTimer = new Timer(1000, () => {
             if(GameLevel.livesCount === 0){
@@ -191,6 +190,7 @@ export default class GameLevel extends Scene {
                         this.respawnPlayer();
                         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "player_death", loop: false, holdReference: false});
                         if(GameLevel.livesCount===0){
+                            this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "song"});
                             this.sceneManager.changeToScene(MainMenu, {});
                         }
                     }
