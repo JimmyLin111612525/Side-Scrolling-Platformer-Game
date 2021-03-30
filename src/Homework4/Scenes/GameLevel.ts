@@ -190,8 +190,6 @@ export default class GameLevel extends Scene {
                         this.respawnPlayer();
                         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "player_death", loop: false, holdReference: false});
                         if(GameLevel.livesCount===0){
-                            GameLevel.livesCount=3
-                            GameLevel.coinCount=0
                             this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "song"});
                             this.sceneManager.changeToScene(MainMenu, {});
                         }
