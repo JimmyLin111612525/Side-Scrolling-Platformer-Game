@@ -428,7 +428,7 @@ export default class GameLevel extends Scene {
     protected handlePlayerEnemyCollision(player: AnimatedSprite, enemy: AnimatedSprite) {
         if(enemy){
             if(enemy.imageId==='GhostBunny'){
-                if(player.sweptRect.bottom>=enemy.sweptRect.top && (player.sweptRect.right>enemy.sweptRect.left || player.sweptRect.left<enemy.sweptRect.right) && (player.sweptRect.top != enemy.sweptRect.top)){
+                if((((player.sweptRect.bottomRight.x>=enemy.sweptRect.topLeft.x) && (player.sweptRect.bottomRight.y>=enemy.sweptRect.topLeft.y)) || ((player.sweptRect.bottomLeft.x<=enemy.sweptRect.topRight.x) && (player.sweptRect.bottomLeft.y>=enemy.sweptRect.topRight.y))) && (!player.onGround)){
                     enemy.disablePhysics()
                     enemy.animation.play('DYING', false, HW4_Events.ENEMY_DIED)
                     this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "ghost", loop: false, holdReference: false});
@@ -447,7 +447,7 @@ export default class GameLevel extends Scene {
                 }
                 
             }else if(enemy.imageId==='Hopper'){
-                if((player.sweptRect.top>enemy.sweptRect.top) && (player.sweptRect.bottom > enemy.sweptRect.bottom) && (player.sweptRect.top<=enemy.sweptRect.bottom) && (!enemy.onGround)){
+                if((((player.sweptRect.topRight.x>=enemy.sweptRect.bottomLeft.x) && (player.sweptRect.topRight.y <= enemy.sweptRect.bottomLeft.y))||((player.sweptRect.topLeft.x<=enemy.sweptRect.bottomRight.x) && (player.sweptRect.topLeft.y <= enemy.sweptRect.bottomRight.y))) && (!enemy.onGround) && (!player.onGround)){
                     console.log(enemy)
                     enemy.disablePhysics()
                     enemy.animation.play('DYING',false, HW4_Events.ENEMY_DIED)
